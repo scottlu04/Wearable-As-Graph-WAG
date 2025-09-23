@@ -1,1 +1,2 @@
-# -Wearable-As-Graph-WAG
+# Wearable-As-Graph-WAG
+Coming Soon
