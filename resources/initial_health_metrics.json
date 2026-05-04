@@ -1,0 +1,80 @@
+{
+    "Physiological": [
+        "Heart rate",
+        "Heart rate variability",
+        "Blood pressure",
+        "Blood oxygen saturation",
+        "Pulse wave velocity",
+        "Cardiac output",
+        "Peripheral blood flow",
+        "Respiratory rate",
+        "Oxygen uptake",
+        "Carbon dioxide exhalation rate",
+        "Lung volume",
+        "Breathing rhythm",
+        "Muscle activity",
+        "Blood glucose levels",
+        "Lactate levels",
+        "Basal metabolic rate",
+        "Core body temperature",
+        "Brain activity",
+        "Skin temperature",
+        "Sweat rate",
+        "Electrolyte concentration",
+        "Skin hydration levels",
+        "Skin conductance",
+        "PH of sweat"
+    ],
+
+    "Sleep": [
+        "Sleep stages (light, deep, REM)",
+        "Sleep apnea events",
+        "Total sleep duration",
+        "Sleep onset latency",
+        "Wake after sleep onset",
+        "Sleep efficiency",
+        "Arousals per night",
+        "Breathing irregularities",
+        "Snoring patterns",
+        "Circadian rhythm patterns"
+    ],
+    "Activity": [
+        "Steps taken",
+        "Distance traveled",
+        "Active time",
+        "Energy expenditure",
+        "Activity level",
+        "Running dynamics",
+        "Balance and stability",
+        "Joint movement and flexibility"
+    ],
+    "Mental": [
+        "Mental stress",
+        "Mental fatigue",
+        "Mental workload",
+        "Engagement",
+        "Cognitive load",
+        "Memory performance",
+        "Decision-making speed",
+        "Mood"
+    ],
+    "Environmental": [
+        "Ambient temperature",
+        "Humidity",
+        "Barometric pressure",
+        "UV radiation exposure",
+        "Air quality",
+        "Noise levels",
+        "Electromagnetic field exposure",
+        "Altitude"
+    ],
+    "Lifestyle": [
+        "GPS location",
+        "Travel patterns",
+        "Proximity to other devices or people",
+        "Interaction frequency with social contacts",
+        "Time spent on specific activities",
+        "Screen interaction patterns",
+        "Daily routine adherence"
+    ]
+}

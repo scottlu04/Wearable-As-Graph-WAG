@@ -1,0 +1,1616 @@
+{
+    "Resting time": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "rest",
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Number of minutes during the day spent resting i.e. sleeping or lying down (average MET level of the minute is below 1.05).",
+                "range": "0-1440",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Inactive time": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "sedentary_minutes",
+            "lifesnap": "sedentary_minutes",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "sums up the number of sedentary minutes per day.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Total duration of all sedentary bouts during a time segment.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Active time": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "active_minutes",
+            "pmdata": "active_minutes",
+            "lifesnap": "active time",
+            "globem": "f_steps:fitbit_steps_intraday_rapids_sumdurationactivebout:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total duration of all active bouts during a time segment.",
+                "range": "0-1440",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Total duration of all active bouts during a time segment.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Lightly active time": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "low",
+            "pmdata": "lightly_active_minutes",
+            "lifesnap": "lightly_active_minutes",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Number of minutes during the day with low intensity activity (e.g. household work, average MET level of the minute between 2 and age dependent limit).",
+                "range": "0-1440",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "sums up the number of lightly active minutes per day.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Moderately active time": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "medium",
+            "pmdata": "moderately_active_minutes",
+            "lifesnap": "moderately_active_minutes",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Number of minutes during the day with medium intensity activity (e.g. walking). The upper and lower MET level limits for medium intensity activity depend on participant\u2019s age and gender.",
+                "range": "0-1440",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "sums up the number of moderately active minutes per day.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Highly active time": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "high",
+            "pmdata": "very_active_minutes",
+            "lifesnap": "very_active_minutes",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Number of minutes during the day with high intensity activity (e.g. running). The lower MET level limit for high intensity activity depends on the participant's age and gender.",
+                "range": "0-1440",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "sums up the number of very active minutes per day.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Steps taken": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "steps",
+            "pmdata": "steps",
+            "lifesnap": "steps",
+            "globem": "f_steps:fitbit_steps_intraday_rapids_sumsteps:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total number of steps registered during the day.",
+                "range": "None",
+                "unit": "number"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "The total step count during a time segment.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Distance traveled": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "move_distance_meter",
+            "pmdata": "distance",
+            "lifesnap": "distance",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total distance travelled by foot since the last reboot of the device to time indicated by timestamp.",
+                "range": "",
+                "unit": "meters"
+            },
+            "pmdata": {
+                "description": "gives the distance moved per minute. Distance is given in centimeters.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "Distance walked by the user",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Energy expenditure": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": "cal_total",
+            "pmdata": "calories",
+            "lifesnap": "calories",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total energy consumption during the day including Basal Metabolic Rate",
+                "range": "None",
+                "unit": "kcal"
+            },
+            "pmdata": {
+                "description": "how many calories the per-son have burned the last minute.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Exercise": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "exercise",
+            "lifesnap": "Exercise",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "daily log of exercise in detail",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Step goal": {
+        "type": "Activity",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "step_goal",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Total sleep duration": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "duration",
+            "pmdata": "sleep_duration",
+            "lifesnap": "sleep_duration",
+            "globem": "f_slp:fitbit_sleep_summary_rapids_sumdurationinbedmain:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total duration of the sleep period.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Total duration of all sleep episodes.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Asleep duration": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "total",
+            "pmdata": "minutesAsleep",
+            "lifesnap": "minutesAsleep",
+            "globem": "f_slp:fitbit_sleep_summary_rapids_sumdurationasleepmain:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total amount of sleep registered during the sleep period.",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Total sleep duration for a certain sleep type during a time segment.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Light sleep duration": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "light",
+            "pmdata": "light",
+            "lifesnap": "light",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total amount of light sleep registered during the sleep period.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": { 
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Deep sleep duration": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "deep",
+            "pmdata": "deep",
+            "lifesnap": "deep",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total amount of deep sleep registered during the sleep period.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": { 
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Rem sleep duration": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "rem",
+            "pmdata": "rem",
+            "lifesnap": "rem",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total amount of REM sleep registered during the sleep period.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": { 
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+
+    },
+    "Wake after sleep onset": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "awake",
+            "pmdata": "minutesAwake",
+            "lifesnap": "minutesAwake",
+            "globem": "f_slp:fitbit_sleep_summary_rapids_sumdurationawakemain:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Total amount of awake time registered during the sleep period.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": { 
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Sleep efficiency": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "efficiency",
+            "pmdata": "efficiency",
+            "lifesnap": "sleep_efficiency",
+            "globem": "f_slp:fitbit_sleep_summary_rapids_avgefficiencymain:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Sleep efficiency is the percentage of the sleep period spent asleep (100\\* total / duration).",
+                "range": "0-100",
+                "unit": "Number"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Average sleep efficiency for a certain sleep type during a time segment.\n",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Bedtime start time": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "bedtime_start_timestamp",
+            "pmdata": "startTime",
+            "lifesnap": "startTime",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Bedtime end time": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "bedtime_end_timestamp",
+            "pmdata": "endTime",
+            "lifesnap": "endTime",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Sleep onset latency": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "onset_latency",
+            "pmdata": "minutesToFallAsleep",
+            "lifesnap": "minutesToFallAsleep",
+            "globem": "f_slp:fitbit_sleep_summary_rapids_sumdurationtofallasleepmain:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Detected latency from getting into bed to the beginning of the first five minutes of persistent sleep.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Midpoint of sleep": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": "midpoint_time",
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "The time in seconds from the start of sleep to the midpoint of sleep. The midpoint ignores awake periods.",
+                "range": "",
+                "unit": "minutes"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Time after wakeup": {
+        "type": "Sleep",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "minutesAfterWakeup",
+            "lifesnap": "minutesAfterWakeup",
+            "globem": "f_slp:fitbit_sleep_summary_rapids_sumdurationafterwakeupmain:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": { 
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+
+    },
+    "HRV RMSSD": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": "rmssd",
+            "pmdata": NaN,
+            "lifesnap": "rmssd",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "The average HRV calculated with the rMSSD method.",
+                "range": "",
+                "unit": "milliseconds"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Resting heart rate": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": "hr_average",
+            "pmdata": NaN,
+            "lifesnap": "resting_hr",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "The average heart rate registered during the sleep period.",
+                "range": "",
+                "unit": "beats/minute"
+            },
+            "pmdata": {
+                "description": "gives the resting heart rate per day.",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "A normal resting heart rate for adults ranges from 60 to 100 beats per minute. Generally, a lower heart rate at rest implies more efficient heart function and better cardiovascular fitness.",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Nightly skin temperature": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "nightly_temperature",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "night skin temperature of the user during sleep ",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Blood oxygen saturation": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "spo2",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "Daily oxygen saturation levels",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Sleep breathing rate": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": "breath_average",
+            "pmdata": NaN,
+            "lifesnap": "full_sleep_breathing_rate",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Average respiratory rate during the sleep period.",
+                "range": "",
+                "unit": "breaths/minute"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Temperature Variation": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": "temperature_delta",
+            "pmdata": NaN,
+            "lifesnap": "daily_temperature_variation",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "Skin temperature deviation from the long-term temperature average.",
+                "range": "",
+                "unit": "Celsius"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "the difference between the measured value and the user's 30-day baseline (unknown where the baseline is stored or how it is calculated).",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "VO2 Max": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "filteredDemographicVO2Max",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "### VO2 Max\nVO2 Max is a measurement of how well your body uses oxygen when you\u2019re working out at your hardest. It is widely accepted as the gold standard for grading cardiovascular fitness: the higher your VO2 Max, the more fit you are (source). This metric can also indicate performance potential for endurance-based activities including running, biking, and swimming (source).\n\nVO2 Max is traditionally measured in a lab where you run on a treadmill or ride a stationary bike until exhaustion with a mask strapped to your nose and mouth to gauge the amount of air you inhale and exhale. While this method provides the most accurate measure of VO2 Max, your Fitbit device can estimate this value for you with less effort and discomfort.\n\nFitbit estimates your VO2 Max and refers to it as your cardio fitness score at a 2-day granularity (N=6364).",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Skin conductance": {
+        "type": "Physiological",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "scl_avg",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "These entries contain the skin conductance level, which we can get on average for a day (i.e., as an indication of stress).",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "PANAS positive affect": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": "Panas positive",
+            "pmdata": NaN,
+            "lifesnap": "positive_affect_score",
+            "globem": "positive_affect_EMA"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "PANAS negative affect": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": "Panas negative",
+            "pmdata": NaN,
+            "lifesnap": "negative_affect_score",
+            "globem": "negative_affect_EMA"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Mental stress": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "stress",
+            "lifesnap": NaN,
+            "globem": "pss4_EMA"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "self-report stress score",
+                "range": "1-5 scale. Score 3 is normal, and 1-2 are scores below normal, and 4-5 are scores above normal",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "A 4-item scale assessing stress levels during the last month. Higher values indicates more perceived stress.",
+                "range": "0-16",
+                "unit": "number"
+            }
+        }
+    },
+    "Mental fatigue": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "fatigue",
+            "lifesnap": NaN,
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "self-report fatigue score",
+                "range": "1-5 scale. Score 3 is normal, and 1-2 are scores below normal, and 4-5 are scores above normal",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Mood": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "mood",
+            "lifesnap": "",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "self-report mood",
+                "range": "happy, tense, etc.",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Anxiety": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "phq4_anxiety_EMA"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "A 4-item scale assessing (a) mental health, (b) anxiety, and (c) depression. Higher values indicate higher risk of mental health, anxiety, and depression. total score is determined by adding together the scores of each of the 4 items. Scores are rated as normal (0-2), mild (3-5), moderate (6-8), and severe (9-12). Total score ≥3 for first 2 questions suggests anxiety. Total score ≥3 for last 2 questions suggests depression.",
+                "range": "0-6",
+                "unit": "number"
+            }
+        }
+    },
+    "Depression": {
+        "type": "Mental",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "phq4_depression_EMA"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "A 4-item scale assessing (a) mental health, (b) anxiety, and (c) depression. Higher values indicate higher risk of mental health, anxiety, and depression. total score is determined by adding together the scores of each of the 4 items. Scores are rated as normal (0-2), mild (3-5), moderate (6-8), and severe (9-12). Total score ≥3 for first 2 questions suggests anxiety. Total score ≥3 for last 2 questions suggests depression.",
+                "range": "0-6",
+                "unit": "number"
+            }
+        }
+    },
+    "Lifelog": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": "lifelog: injury",
+            "lifesnap": "mindfulness_sessions",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "These data can help us understand if the user conducted an EDA session voluntarily ",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Number of calls": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "number of calls"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "Number of calls",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Entropy of call duration": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "call entropy"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "The estimate of the Shannon entropy for the the duration of all the calls of a particular call_type during a particular time_segment.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Number of phone unlock": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "f_screen:phone_screen_rapids_countepisodeunlock:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Number of all unlock episodes.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Duration of phone unlock": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "f_screen:phone_screen_rapids_sumdurationunlock:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Total duration of all unlock episodes.",
+                "range": "",
+                "unit": "minutes"
+            }
+        }
+    },
+    "Time at home": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "f_loc:phone_locations_barnett_hometime:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "Time at home. Time spent at home in minutes. Home is the most visited significant location between 8 pm and 8 am, including any pauses within a 200-meter radius.\n",
+                "range": "",
+                "unit": "minutes"
+            }
+        }
+    },
+    "The Radius of Gyration": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "f_loc:phone_locations_barnett_rog:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "The Radius of Gyration (rog) is a measure in meters of the area covered by a person over a day. A centroid is calculated for all the places (pauses) visited during a day, and a weighted distance between all the places and that centroid is computed. The weights are proportional to the time spent in each place.",
+                "range": "",
+                "unit": "meters"
+            }
+        }
+    },
+    "Maximum distance from home": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "f_loc:phone_locations_barnett_maxhomedist:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "The maximum distance from home in meters.",
+                "range": "",
+                "unit": "meters"
+            }
+        }
+    },
+    "Circadian rhythm patterns": {
+        "type": "Lifestyle",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": "f_loc:phone_locations_barnett_circdnrtn:allday"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "A continuous metric quantifying a person's circadian routine that can take any value between 0 and 1, where 0 represents a daily routine completely different from any other sensed days and 1 a routine the same as every other sensed day.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Age": {
+        "type": "Demograhic",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "age",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Gender": {
+        "type": "Demograhic",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "gender",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Bmi": {
+        "type": "Demograhic",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "bmi",
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Personality": {
+        "type": "Demograhic",
+        "alias": {
+            "ifh_affect": NaN,
+            "pmdata": NaN,
+            "lifesnap": "ipip_personality",
+            "globem": "BFI10"
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "The Big-Five Inventory-10\n\nDescription: A 10-item scale measuring the Big Five personality traits Extroversion, Agreeableness, Conscientiousness, Emotional Stability, and Openness. The higher the score, the greater the tendency of the corresponding personality.",
+                "range": "",
+                "unit": ""
+            }
+        }
+    },
+    "Barometric pressure": {
+        "type": "Environmental",
+        "alias": {
+            "ifh_affect": "pressure",
+            "pmdata": NaN,
+            "lifesnap": NaN,
+            "globem": NaN
+        },
+        "description": {
+            "ifh_affect": {
+                "description": "The atmospheric pressure in the device\u2019s surrounding environment.",
+                "range": "260-1260",
+                "unit": "hPa"
+            },
+            "pmdata": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "lifesnap": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            },
+            "globem": {
+                "description": "",
+                "range": "",
+                "unit": ""
+            }
+        }
+    }
+}

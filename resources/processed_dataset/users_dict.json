@@ -1,0 +1,112 @@
+{
+    "ls_621e326767b776a24012e179": {
+        "date_range": {
+            "start_date": "2021-05-24 00:00:00",
+            "end_date": "2021-08-07 00:00:00",
+            "duration_days": 75
+        },
+        "missing_percentage": 48.94736842105264,
+        "n_records": 76,
+        "total_cells": 4180,
+        "missing_cells": 2046
+    },
+    "ls_621e2f3967b776a240c654db": {
+        "date_range": {
+            "start_date": "2021-05-24 00:00:00",
+            "end_date": "2021-08-01 00:00:00",
+            "duration_days": 69
+        },
+        "missing_percentage": 50.98701298701299,
+        "n_records": 70,
+        "total_cells": 3850,
+        "missing_cells": 1963
+    },
+    "ls_621e339967b776a240e502de": {
+        "date_range": {
+            "start_date": "2021-10-08 00:00:00",
+            "end_date": "2022-01-19 00:00:00",
+            "duration_days": 103
+        },
+        "missing_percentage": 51.790633608815426,
+        "n_records": 66,
+        "total_cells": 3630,
+        "missing_cells": 1880
+    },
+    "ls_621e33cf67b776a240087de9": {
+        "date_range": {
+            "start_date": "2021-11-02 00:00:00",
+            "end_date": "2022-01-22 00:00:00",
+            "duration_days": 81
+        },
+        "missing_percentage": 51.352549889135254,
+        "n_records": 82,
+        "total_cells": 4510,
+        "missing_cells": 2316
+    },
+    "ls_621e32af67b776a24045b4cf": {
+        "date_range": {
+            "start_date": "2021-05-24 00:00:00",
+            "end_date": "2021-07-26 00:00:00",
+            "duration_days": 63
+        },
+        "missing_percentage": 46.98863636363637,
+        "n_records": 64,
+        "total_cells": 3520,
+        "missing_cells": 1654
+    },
+    "ls_621e2e8e67b776a24055b564": {
+        "date_range": {
+            "start_date": "2021-05-24 00:00:00",
+            "end_date": "2021-08-02 00:00:00",
+            "duration_days": 70
+        },
+        "missing_percentage": 49.449423815620996,
+        "n_records": 71,
+        "total_cells": 3905,
+        "missing_cells": 1931
+    },
+    "ls_621e32e667b776a2406d2f1c": {
+        "date_range": {
+            "start_date": "2021-10-18 00:00:00",
+            "end_date": "2022-01-25 00:00:00",
+            "duration_days": 99
+        },
+        "missing_percentage": 50.07421150278293,
+        "n_records": 98,
+        "total_cells": 5390,
+        "missing_cells": 2699
+    },
+    "ls_621e312a67b776a240164d59": {
+        "date_range": {
+            "start_date": "2021-10-06 00:00:00",
+            "end_date": "2022-01-22 00:00:00",
+            "duration_days": 108
+        },
+        "missing_percentage": 58.89908256880734,
+        "n_records": 109,
+        "total_cells": 5995,
+        "missing_cells": 3531
+    },
+    "ls_621e351a67b776a240f6204b": {
+        "date_range": {
+            "start_date": "2021-05-24 00:00:00",
+            "end_date": "2021-10-05 00:00:00",
+            "duration_days": 134
+        },
+        "missing_percentage": 54.78787878787878,
+        "n_records": 135,
+        "total_cells": 7425,
+        "missing_cells": 4068
+    },
+    "ls_621e333967b776a240a3cd06": {
+        "date_range": {
+            "start_date": "2021-10-07 00:00:00",
+            "end_date": "2022-01-22 00:00:00",
+            "duration_days": 107
+        },
+        "missing_percentage": 54.629629629629626,
+        "n_records": 108,
+        "total_cells": 5940,
+        "missing_cells": 3245
+    }
+}

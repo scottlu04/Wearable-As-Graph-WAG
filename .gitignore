@@ -1,0 +1,171 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.manifest
+*.spec
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.virtualenv
+
+# Environment Variables (contains API keys!)
+.env
+.env.local
+.env.*.local
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb.bak
+
+# Logs
+logs/
+*.log
+log/
+*.log.*
+
+# Results and Outputs
+results/
+filters/
+output/
+outputs/
+experiments/
+experiment_*/
+resources/experiment_result/
+*_report.html
+*.pkl
+*.pickle
+
+# Large Data Files
+*.h5
+*.hdf5
+*.parquet
+*.feather
+
+# Model Files
+*.pth
+*.pt
+*.ckpt
+*.model
+models/*.pth
+models/*.pt
+
+# Resources (uncomment specific patterns as needed)
+# If you want to ignore all resources data:
+# resources/kg/
+# resources/processed_dataset/
+# resources/query_set/
+# resources/*.json
+# resources/*.csv
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.cache
+
+# Coverage Reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Documentation
+docs/_build/
+site/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Compressed Files
+*.zip
+*.tar.gz
+*.tar
+*.rar
+
+# Backup Files
+*_backup/
+*_old/
+*_copy/
+backup/
+
+# Mac
+.AppleDouble
+.LSOverride
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Project Specific
+# Uncomment as needed based on your workflow:
+# experiment_1/
+# evaluation/
+# Data_analysis/

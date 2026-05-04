@@ -1,0 +1,27 @@
+{
+    "Physiological": [
+        "Heart rate",
+        "Blood oxygen saturation"
+    ],
+
+    "Sleep": [
+        "Total sleep duration",
+        "Sleep efficiency"
+    
+    ],
+    "Activity": [
+        "Active time",
+        "Activity level"
+    ],
+    "Mental": [
+        "Mental stress",
+        "Mental fatigue"
+    ],
+    "Environmental": [
+        "Ambient temperature"
+    ],
+    "Lifestyle": [
+        "Screen interaction patterns",
+        "Daily routine adherence"
+    ]
+}
