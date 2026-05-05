@@ -5,41 +5,6 @@ longitudinal wearable-health data. It builds a personalized wearable knowledge
 graph, retrieves a query-conditioned subgraph, and uses that context to support
 LLM reasoning over personal time-series signals.
 
-## What Is Included
-
-- Core graph construction, query generation, response generation, and evaluation code.
-- Response-generation processors for `Base`, `RAG`, `StaticGraph`, `FullContext`,
-  `WAG`, and the optional `FullHistory` baseline.
-- Reproducibility resources under `resources/`, including the wearable knowledge
-  graph, generated query set, processed data tables, and relationship dictionary.
-- Shell scripts for running the main graph/query/response/evaluation pipeline.
-
-## What Is Not Included
-
-This open-source copy intentionally excludes generated experiment outputs,
-runtime logs, local notebooks, virtual environments, API keys, and internal
-diagnostic experiments such as cross-model robustness sweeps and timing-only
-paper-table scripts.
-
-## Setup
-
-```bash
-git clone <your-repo-url>
-cd WAG
-
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-cp .env.example .env
-# Edit .env and add the API keys for the providers you plan to use.
-```
-
-Quick environment check:
-
-```bash
-python -c "import dotenv, scipy, sklearn, networkx, openai; print('env ok')"
-```
 
 ## Repository Structure
 
