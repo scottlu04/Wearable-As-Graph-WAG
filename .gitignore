@@ -169,3 +169,6 @@ tramp
 # experiment_1/
 # evaluation/
 # Data_analysis/
+
+# IDE / Editors
+.claude/
