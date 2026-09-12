@@ -20,6 +20,7 @@
   var edgeCountEl = document.getElementById("edge-count");
   var searchEl = document.getElementById("search");
   var labelsEl = document.getElementById("labels");
+  var hullsEl = document.getElementById("hulls");
 
   var nodes = [];        // {i, id, name, type, desc, range, rec, cui, ds, deg}
   var allEdges = [];     // {s, t, w, k}
@@ -29,6 +30,7 @@
   var selected = null;
   var graph = null;
   var colors = {};
+  var POS = null;      // baked coordinates from data/layout.json, via kg.js
 
   TYPES.forEach(function (t) { active[t] = true; });
 
@@ -74,13 +76,65 @@
     }
   }
 
-  if (window.__WAG_KG__) {
-    boot(window.__WAG_KG__);
-  } else {
-    fetch("data/kg.json")
-      .then(function (r) { return r.json(); })
-      .then(boot)
-      .catch(function (e) { note("Static view — graph data unavailable (" + e.message + ")."); });
+
+  /* ---------- cluster hulls (as in the paper figure) ---------- */
+
+  var TOOLTIP = {
+    type: "tooltip",
+    key: "tip",
+    trigger: "hover",
+    enterable: false,
+    getContent: function (ev, items) {
+      var html = "";
+      items.forEach(function (item) {
+        var d = (item && item.data) || {};
+        if (d.kind === "node") {
+          html += "<b>" + esc(d.name) + "</b><br><span class='tt-type'>" +
+                  esc(d.type) + "</span>" +
+                  (d.range ? "<br>" + esc(trim(d.range, 150)) : "");
+        } else if (d.kind === "edge") {
+          html += "<b>" + esc(d.a) + " &rarr; " + esc(d.b) + "</b><br>weight " +
+                  Number(d.w).toFixed(2);
+        }
+      });
+      return html;
+    }
+  };
+
+  // One rounded hull per category, labelled, over the nodes currently shown.
+  // Fewer than three members has no meaningful hull, so those are skipped.
+  function buildHulls() {
+    if (!hullsEl || !hullsEl.checked) return [];
+    var byType = {};
+    nodes.forEach(function (n) {
+      if (!visible(n)) return;
+      (byType[n.type] || (byType[n.type] = [])).push(n.id);
+    });
+    return TYPES.filter(function (t) {
+      return byType[t] && byType[t].length >= 3;
+    }).map(function (t) {
+      var c = colors[t];
+      return {
+        key: "hull-" + t.toLowerCase(),
+        type: "hull",
+        members: byType[t],
+        corner: "rounded",
+        padding: 16,
+        fill: c,
+        fillOpacity: 0.13,
+        stroke: c,
+        strokeOpacity: 0.45,
+        labelText: t,
+        labelFill: "#fff",
+        labelPadding: 3,
+        labelBackgroundFill: c,
+        labelBackgroundRadius: 5
+      };
+    });
+  }
+
+  function buildPlugins() {
+    return [TOOLTIP].concat(buildHulls());
   }
 
   function start(data) {
@@ -100,6 +154,8 @@
       adjacency[e[1]].push({ j: e[0], w: e[2], k: idx });
     });
     adjacency.forEach(function (l) { l.sort(function (a, b) { return b.w - a.w; }); });
+
+    POS = data.pos || null;
 
     buildChips();
 
@@ -140,17 +196,9 @@
           dim: { strokeOpacity: 0.04 }
         }
       },
-      layout: {
-        type: "d3-force",
-        link: {
-          distance: function (e) { return 26 + (1 - e.data.w) * 90; },
-          strength: function (e) { return e.data.w * 0.35; }
-        },
-        manyBody: { strength: -150, distanceMax: 340 },
-        collide: { radius: 22 },
-        x: { strength: 0.08 },
-        y: { strength: 0.09 }
-      },
+      // No runtime layout: coordinates are baked into data/layout.json by the
+      // clustered force layout (see docs/build.py). Running it in the page costs
+      // ~14s and gives a different picture every time.
       behaviors: [
         "zoom-canvas",
         "drag-canvas",
@@ -164,29 +212,7 @@
           enable: function (ev) { return ev.targetType === "node"; }
         }
       ],
-      plugins: [
-        {
-          type: "tooltip",
-          key: "tip",
-          trigger: "hover",
-          enterable: false,
-          getContent: function (ev, items) {
-            var html = "";
-            items.forEach(function (item) {
-              var d = (item && item.data) || {};
-              if (d.kind === "node") {
-                html += "<b>" + esc(d.name) + "</b><br><span class='tt-type'>" +
-                        esc(d.type) + "</span>" +
-                        (d.range ? "<br>" + esc(trim(d.range, 150)) : "");
-              } else if (d.kind === "edge") {
-                html += "<b>" + esc(d.a) + " &rarr; " + esc(d.b) + "</b><br>weight " +
-                        Number(d.w).toFixed(2);
-              }
-            });
-            return html;
-          }
-        }
-      ]
+      plugins: buildPlugins()
     });
 
     graph.on("node:click", function (ev) {
@@ -235,13 +261,15 @@
     });
 
     var shown = nodes.filter(visible).map(function (n) {
-      return {
+      var item = {
         id: n.id,
         data: {
           kind: "node", i: n.i, name: n.name, type: n.type,
           range: n.range, deg: n.deg
         }
       };
+      if (POS && POS[n.i]) item.style = { x: POS[n.i][0], y: POS[n.i][1] };
+      return item;
     });
 
     return { nodes: shown, edges: edges };
@@ -262,6 +290,7 @@
     applyCounts();
     if (selected && !visible(selected)) select(null);
     graph.setData(buildData());
+    graph.setOptions({ plugins: buildPlugins() });
     graph.render();
   }
 
@@ -413,6 +442,14 @@
     if (graph) graph.render();
   });
 
+  if (hullsEl) {
+    hullsEl.addEventListener("change", function () {
+      if (!graph) return;
+      graph.setOptions({ plugins: buildPlugins() });
+      graph.render();
+    });
+  }
+
   document.getElementById("reset").addEventListener("click", function () {
     select(null);
     if (graph) graph.fitView();
@@ -438,4 +475,15 @@
       });
     });
   }
+  /* ---------- go ---------- */
+  // Kept last: every var above must be initialised before start() runs.
+  if (window.__WAG_KG__) {
+    boot(window.__WAG_KG__);
+  } else {
+    fetch("data/kg.json")
+      .then(function (r) { return r.json(); })
+      .then(boot)
+      .catch(function (e) { note("Static view — graph data unavailable (" + e.message + ")."); });
+  }
+
 })();

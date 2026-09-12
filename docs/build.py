@@ -274,8 +274,17 @@ def main():
     if os.path.exists(layout_file):
         saved = json.load(open(layout_file, encoding="utf-8"))
         if len(saved.get("pos", [])) == len(nodes):
-            bw, bh = saved.get("box", [W, H])
-            pos = [[p[0] / bw * W, p[1] / bh * H] for p in saved["pos"]]
+            # fit the saved coordinates into the static box rather than scaling by
+            # the canvas they were produced on, so the picture always fills the frame
+            raw = saved["pos"]
+            xs = [p[0] for p in raw]
+            ys = [p[1] for p in raw]
+            sx = (W - 2 * PAD) / max(1e-6, max(xs) - min(xs))
+            sy = (H - 2 * PAD) / max(1e-6, max(ys) - min(ys))
+            sc = min(sx, sy)
+            ox = (W - (max(xs) - min(xs)) * sc) / 2 - min(xs) * sc
+            oy = (H - (max(ys) - min(ys)) * sc) / 2 - min(ys) * sc
+            pos = [[p[0] * sc + ox, p[1] * sc + oy] for p in raw]
             print("layout: using docs/data/layout.json")
     if pos is None:
         print("layout: layout.json missing or stale — falling back to the built-in layout")
