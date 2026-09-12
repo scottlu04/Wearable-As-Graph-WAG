@@ -14,10 +14,7 @@
   }
 
   var svg = d3.select("#graph");
-  var root = svg.append("g");
-  var gLinks = root.append("g").attr("class", "links");
-  var gNodes = root.append("g").attr("class", "nodes");
-  var gLabels = root.append("g").attr("class", "labels");
+  var root, gLinks, gNodes, gLabels;
 
   var tip = document.getElementById("tip");
   var loading = document.getElementById("loading");
@@ -37,22 +34,37 @@
   var active = {};       // type -> shown?
   var selected = null, hovered = null;
   var sim = null, zoom = null, k = 1;
-  var width = 0, height = 0;
+  var width = 0, height = 0, scale = 1;   // scale: graph units per CSS pixel
 
   var nodeSel = null, linkSel = null, labelSel = null;
 
   TYPES.forEach(function (t) { active[t] = true; });
 
+  // index.html ships a pre-laid-out static copy of the graph. If anything below
+  // fails, that copy stays on screen rather than leaving an empty box.
+  function note(msg) {
+    loading.textContent = msg;
+    loading.className = "loading badge";
+    loading.hidden = false;
+  }
+
+  function boot(data) {
+    try {
+      start(data);
+    } catch (err) {
+      note("Static view — interactive graph failed: " + (err && err.message ? err.message : err));
+      if (typeof console !== "undefined") console.error(err);
+    }
+  }
+
   if (window.__WAG_KG__) {
-    start(window.__WAG_KG__);
+    boot(window.__WAG_KG__);
   } else {
     // fallback for anyone loading app.js without data/kg.js
     fetch("data/kg.json")
       .then(function (r) { return r.json(); })
-      .then(start)
-      .catch(function (e) {
-        loading.textContent = "Could not load the graph data (" + e.message + ").";
-      });
+      .then(boot)
+      .catch(function (e) { note("Static view — graph data unavailable (" + e.message + ")."); });
   }
 
   /* ---------- setup ---------- */
@@ -78,16 +90,34 @@
     buildChips();
     measure();
 
+    // the static copy stays until the interactive graph has actually drawn
+    root = svg.append("g");
+    gLinks = root.append("g").attr("class", "links");
+    gNodes = root.append("g").attr("class", "nodes");
+    gLabels = root.append("g").attr("class", "labels");
+
+    // start from the pre-computed layout so the picture does not jump
+    var box = data.box || [590, 620];
+    if (data.pos) {
+      nodes.forEach(function (n, i) {
+        var p = data.pos[i];
+        if (!p) return;
+        n.x = p[0] / box[0] * width;
+        n.y = p[1] / box[1] * height;
+      });
+    }
+
     sim = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(links).id(function (d) { return d.i; })
-        .distance(function (d) { return 30 + (1 - d.w) * 150; })
+        .distance(function (d) { return 26 + (1 - d.w) * 90; })
         .strength(function (d) { return d.w * 0.35; }))
-      .force("charge", d3.forceManyBody().strength(-260).distanceMax(520))
+      .force("charge", d3.forceManyBody().strength(-150).distanceMax(340))
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("x", d3.forceX(width / 2).strength(0.035))
-      .force("y", d3.forceY(height / 2).strength(0.05))
+      .force("x", d3.forceX(width / 2).strength(0.08))
+      .force("y", d3.forceY(height / 2).strength(0.09))
       .force("collide", d3.forceCollide().radius(function (d) { return radius(d) + 5; }))
-      .on("tick", tick);
+      .on("tick", tick)
+      .on("end", function () { refit(); });
 
     // nodes and labels are created once; visibility is toggled by filters
     nodeSel = gNodes.selectAll("circle").data(nodes).join("circle")
@@ -107,13 +137,16 @@
     zoom = d3.zoom().scaleExtent([0.3, 6]).on("zoom", function (ev) {
       k = ev.transform.k;
       root.attr("transform", ev.transform);
-      gLabels.style("font-size", (11 / k) + "px");
-      gLabels.style("stroke-width", (3 / k) + "px");
+      applyTextScale();
       updateLabels();
     });
     svg.call(zoom).on("click", function () { select(null); });
 
-    applyFilters(true);
+    applyFilters(0.25);
+
+    // interactive graph is up — retire the static copy
+    var stat = document.getElementById("static-graph");
+    if (stat && stat.parentNode) stat.parentNode.removeChild(stat);
     loading.hidden = true;
   }
 
@@ -123,7 +156,7 @@
   function visible(n) { return active[n.type]; }
   function radius(n) { return 4.5 + Math.sqrt(n.deg) * 1.05; }
 
-  function applyFilters(reheat) {
+  function applyFilters(alpha) {
     var t = threshold();
     links.length = 0;
     nodes.forEach(function (n) { n.deg = 0; });
@@ -152,7 +185,7 @@
 
     sim.force("link").links(links);
     sim.force("collide").radius(function (d) { return radius(d) + 5; });
-    sim.alpha(reheat ? 0.9 : 0.45).restart();
+    sim.alpha(alpha).restart();
     paint();
   }
 
@@ -162,28 +195,63 @@
     var rect = svg.node().parentNode.getBoundingClientRect();
     width = rect.width; height = rect.height;
     svg.attr("viewBox", "0 0 " + width + " " + height);
+    scale = 1;
   }
 
   function onResize() {
     measure();
     if (!sim) return;
     sim.force("center", d3.forceCenter(width / 2, height / 2));
-    sim.force("x", d3.forceX(width / 2).strength(0.035));
-    sim.force("y", d3.forceY(height / 2).strength(0.05));
-    sim.alpha(0.3).restart();
+    sim.force("x", d3.forceX(width / 2).strength(0.08));
+    sim.force("y", d3.forceY(height / 2).strength(0.09));
+    refit();
+  }
+
+  // The simulation lays out in an unbounded space; the viewBox is what adapts to
+  // it. Clamping node positions to the container instead just pins everything to
+  // the walls. `scale` is graph units per CSS pixel, used to keep label text a
+  // constant on-screen size however far the view is zoomed out.
+  function refit() {
+    var shown = nodes.filter(visible);
+    if (!shown.length || !width || !height) return;
+
+    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    shown.forEach(function (n) {
+      var r = radius(n);
+      if (n.x - r < minX) minX = n.x - r;
+      if (n.x + r > maxX) maxX = n.x + r;
+      if (n.y - r < minY) minY = n.y - r;
+      if (n.y + r > maxY) maxY = n.y + r;
+    });
+    if (!isFinite(minX)) return;
+
+    var pad = 16 * scale;
+    var w = (maxX - minX) + 2 * pad;
+    var h = (maxY - minY) + 2 * pad;
+    var aspect = width / height;
+    if (w / h > aspect) h = w / aspect; else w = h * aspect;
+
+    var cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    svg.attr("viewBox", (cx - w / 2) + " " + (cy - h / 2) + " " + w + " " + h);
+
+    scale = w / width;
+    applyTextScale();
+    updateLabels();
+  }
+
+  function applyTextScale() {
+    if (!gLabels) return;
+    gLabels.style("font-size", (11 * scale / k) + "px");
+    gLabels.style("stroke-width", (3 * scale / k) + "px");
   }
   window.addEventListener("resize", onResize);
   if (window.ResizeObserver) {
     new ResizeObserver(onResize).observe(document.querySelector(".canvas-wrap"));
   }
 
-  function tick() {
-    var pad = 26;
-    nodes.forEach(function (n) {
-      n.x = Math.max(pad, Math.min(width - pad, n.x));
-      n.y = Math.max(pad, Math.min(height - pad, n.y));
-    });
+  var tickCount = 0;
 
+  function tick() {
     if (linkSel) {
       linkSel
         .attr("x1", function (d) { return d.source.x; })
@@ -194,7 +262,11 @@
     nodeSel.attr("cx", function (d) { return d.x; })
            .attr("cy", function (d) { return d.y; });
     labelSel.attr("x", function (d) { return d.x; })
-            .attr("y", function (d) { return d.y + radius(d) + 11 / k; });
+            .attr("y", function (d) { return d.y + radius(d) + 11 * scale / k; });
+
+    // the view frames whatever the layout produced, and label placement depends
+    // on where things ended up — both re-run as it moves, throttled
+    if (++tickCount % 6 === 0) refit();
   }
 
   /* ---------- focus + labels ---------- */
@@ -228,16 +300,42 @@
     updateLabels();
   }
 
+  // Greedy label placement: densest nodes win, anything that would overlap an
+  // already-placed label is dropped. Keeps the picture readable at every zoom.
   function updateLabels() {
     if (!labelSel) return;
+    if (!labelsEl.checked) { labelSel.style("display", "none"); return; }
+
     var f = focusNode();
     var near = f ? neighborSet(f) : null;
-    var on = labelsEl.checked;
-    labelSel.style("display", function (d) {
-      if (!on || !visible(d)) return "none";
-      if (f) return near.has(d.i) ? null : "none";
-      return (d.deg >= 6 || k >= 1.4) ? null : "none";
+
+    var cand = nodes.filter(function (n) {
+      return visible(n) && (f ? near.has(n.i) : true);
     });
+    cand.sort(function (a, b) {
+      if (f) {
+        if (a.i === f.i) return -1;
+        if (b.i === f.i) return 1;
+      }
+      return b.deg - a.deg;
+    });
+
+    var fs = 11 * scale / k;               // label size in graph units
+    var placed = [], show = {};
+    cand.forEach(function (n) {
+      if (!f && n.deg < 2 && k < 1.4) return;
+      var w = n.name.length * fs * 0.52, h = fs * 1.2;
+      var x0 = n.x - w / 2, y0 = n.y + radius(n) + 2;
+      var x1 = x0 + w, y1 = y0 + h;
+      for (var i = 0; i < placed.length; i++) {
+        var p = placed[i];
+        if (x0 < p[2] && x1 > p[0] && y0 < p[3] && y1 > p[1]) return;
+      }
+      placed.push([x0, y0, x1, y1]);
+      show[n.i] = true;
+    });
+
+    labelSel.style("display", function (d) { return show[d.i] ? null : "none"; });
   }
 
   /* ---------- interaction ---------- */
@@ -381,23 +479,23 @@
         b.classList.toggle("on", active[t]);
         b.classList.toggle("off", !active[t]);
         if (selected && !visible(selected)) select(null);
-        applyFilters(false);
+        applyFilters(0.45);
       });
       box.appendChild(b);
     });
   }
 
   thresholdEl.addEventListener("input", function () {
-    applyFilters(false);
+    applyFilters(0.45);
     if (selected) renderPanel(selected);
   });
 
   labelsEl.addEventListener("change", updateLabels);
 
   document.getElementById("reset").addEventListener("click", function () {
-    svg.transition().duration(400).call(zoom.transform, d3.zoomIdentity);
     select(null);
-    sim.alpha(0.8).restart();
+    svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
+    refit();
   });
 
   searchEl.addEventListener("input", function () {

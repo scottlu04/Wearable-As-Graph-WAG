@@ -350,12 +350,17 @@ figcaption {
   z-index: 3;
 }
 
-.loading {
-  position: absolute; inset: 0;
-  display: grid; place-items: center;
-  color: var(--faint);
-  font-size: .85rem;
+/* only shown when the interactive graph cannot start; never covers the graph */
+.loading.badge {
+  position: absolute;
+  left: 10px; bottom: 10px; right: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
   background: var(--surface);
+  color: var(--muted);
+  font-size: .78rem;
+  z-index: 3;
 }
 
 .panel {
