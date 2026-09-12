@@ -1,22 +1,17 @@
-/* WAG project page — interactive wearable knowledge graph explorer (SVG). */
+/* WAG project page — wearable knowledge graph explorer, built on @antv/g6 v5.
+ *
+ * index.html ships a pre-laid-out static SVG of the same graph (see build.py).
+ * G6 mounts over it and the static copy is only retired once G6 has actually
+ * rendered, so a failure here leaves a picture on screen rather than a gap.
+ */
 (function () {
   "use strict";
 
   var TYPES = ["Physiological", "Sleep", "Activity", "Lifestyle",
                "Mental", "Environmental", "Demographic"];
 
-  function cls(type) { return "t-" + type.toLowerCase(); }
-
-  if (typeof d3 === "undefined") {
-    document.getElementById("loading").textContent =
-      "The d3 library could not be loaded, so the graph cannot be drawn.";
-    return;
-  }
-
-  var svg = d3.select("#graph");
-  var root, gLinks, gNodes, gLabels;
-
-  var tip = document.getElementById("tip");
+  var mount = document.getElementById("graph-mount");
+  var staticSvg = document.getElementById("graph");
   var loading = document.getElementById("loading");
   var panelEmpty = document.getElementById("panel-empty");
   var panelBody = document.getElementById("panel-body");
@@ -26,27 +21,49 @@
   var searchEl = document.getElementById("search");
   var labelsEl = document.getElementById("labels");
 
-  var nodes = [];        // {i, name, type, desc, range, rec, cui, ds, deg, x, y}
+  var nodes = [];        // {i, id, name, type, desc, range, rec, cui, ds, deg}
   var allEdges = [];     // {s, t, w, k}
-  var links = [];        // active subset (d3 replaces source/target with node objects)
   var adjacency = [];    // per node: [{j, w, k}] sorted by weight desc
-  var edgeDesc = null;   // lazily fetched relation descriptions
+  var edgeDesc = null;   // relation descriptions, loaded on demand
   var active = {};       // type -> shown?
-  var selected = null, hovered = null;
-  var sim = null, zoom = null, k = 1;
-  var width = 0, height = 0, scale = 1;   // scale: graph units per CSS pixel
-
-  var nodeSel = null, linkSel = null, labelSel = null;
+  var selected = null;
+  var graph = null;
+  var colors = {};
 
   TYPES.forEach(function (t) { active[t] = true; });
 
-  // index.html ships a pre-laid-out static copy of the graph. If anything below
-  // fails, that copy stays on screen rather than leaving an empty box.
   function note(msg) {
     loading.textContent = msg;
-    loading.className = "loading badge";
     loading.hidden = false;
   }
+
+  if (typeof G6 === "undefined") {
+    note("Static view — the G6 library could not be loaded.");
+    return;
+  }
+
+  /* ---------- colours follow the page's light/dark tokens ---------- */
+
+  function readColors() {
+    var cs = getComputedStyle(document.documentElement);
+    TYPES.forEach(function (t) {
+      colors[t] = cs.getPropertyValue("--t-" + t.toLowerCase()).trim() || "#6d7480";
+    });
+    colors.edge = cs.getPropertyValue("--faint").trim() || "#8b919c";
+    colors.text = cs.getPropertyValue("--text").trim() || "#17191d";
+    colors.surface = cs.getPropertyValue("--surface").trim() || "#ffffff";
+  }
+  readColors();
+
+  var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  if (darkQuery.addEventListener) {
+    darkQuery.addEventListener("change", function () {
+      readColors();
+      if (graph) applyFilters();
+    });
+  }
+
+  /* ---------- data ---------- */
 
   function boot(data) {
     try {
@@ -60,19 +77,16 @@
   if (window.__WAG_KG__) {
     boot(window.__WAG_KG__);
   } else {
-    // fallback for anyone loading app.js without data/kg.js
     fetch("data/kg.json")
       .then(function (r) { return r.json(); })
       .then(boot)
       .catch(function (e) { note("Static view — graph data unavailable (" + e.message + ")."); });
   }
 
-  /* ---------- setup ---------- */
-
   function start(data) {
     nodes = data.nodes.map(function (n, i) {
       return {
-        i: i, name: n.name,
+        i: i, id: "n" + i, name: n.name,
         type: TYPES.indexOf(n.type) >= 0 ? n.type : "Demographic",
         desc: n.desc, range: n.range, rec: n.rec, cui: n.cui,
         ds: n.ds || [], deg: 0
@@ -88,65 +102,112 @@
     adjacency.forEach(function (l) { l.sort(function (a, b) { return b.w - a.w; }); });
 
     buildChips();
-    measure();
 
-    // the static copy stays until the interactive graph has actually drawn
-    root = svg.append("g");
-    gLinks = root.append("g").attr("class", "links");
-    gNodes = root.append("g").attr("class", "nodes");
-    gLabels = root.append("g").attr("class", "labels");
-
-    // start from the pre-computed layout so the picture does not jump
-    var box = data.box || [590, 620];
-    if (data.pos) {
-      nodes.forEach(function (n, i) {
-        var p = data.pos[i];
-        if (!p) return;
-        n.x = p[0] / box[0] * width;
-        n.y = p[1] / box[1] * height;
-      });
-    }
-
-    sim = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(function (d) { return d.i; })
-        .distance(function (d) { return 26 + (1 - d.w) * 90; })
-        .strength(function (d) { return d.w * 0.35; }))
-      .force("charge", d3.forceManyBody().strength(-150).distanceMax(340))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("x", d3.forceX(width / 2).strength(0.08))
-      .force("y", d3.forceY(height / 2).strength(0.09))
-      .force("collide", d3.forceCollide().radius(function (d) { return radius(d) + 5; }))
-      .on("tick", tick)
-      .on("end", function () { refit(); });
-
-    // nodes and labels are created once; visibility is toggled by filters
-    nodeSel = gNodes.selectAll("circle").data(nodes).join("circle")
-      .attr("class", function (d) { return cls(d.type); })
-      .attr("r", radius)
-      .on("mouseenter", function (ev, d) { setHover(d, ev); })
-      .on("mousemove", function (ev, d) { setHover(d, ev); })
-      .on("mouseleave", function () { setHover(null); })
-      .on("click", function (ev, d) { ev.stopPropagation(); select(d); })
-      .call(d3.drag().on("start", dragStart).on("drag", dragMove).on("end", dragEnd));
-
-    nodeSel.append("title").text(function (d) { return d.name + " · " + d.type; });
-
-    labelSel = gLabels.selectAll("text").data(nodes).join("text")
-      .text(function (d) { return d.name; });
-
-    zoom = d3.zoom().scaleExtent([0.3, 6]).on("zoom", function (ev) {
-      k = ev.transform.k;
-      root.attr("transform", ev.transform);
-      applyTextScale();
-      updateLabels();
+    graph = new G6.Graph({
+      container: mount,
+      autoFit: "view",
+      data: buildData(),
+      node: {
+        style: {
+          size: function (d) { return 9 + Math.sqrt(d.data.deg) * 2.4; },
+          fill: function (d) { return colors[d.data.type]; },
+          stroke: colors.surface,
+          lineWidth: 1,
+          labelText: function (d) { return labelsEl.checked ? d.data.name : ""; },
+          labelFill: colors.text,
+          labelFontSize: 10,
+          labelBackground: true,
+          labelBackgroundFill: colors.surface,
+          labelBackgroundOpacity: 0.72,
+          labelBackgroundRadius: 3,
+          labelPlacement: "bottom",
+          labelMaxWidth: 130
+        },
+        state: {
+          highlight: { lineWidth: 2.5, stroke: colors.text, halo: true },
+          dim: { opacity: 0.18, labelOpacity: 0 },
+          selected: { lineWidth: 3, stroke: colors.text, halo: true }
+        }
+      },
+      edge: {
+        style: {
+          stroke: colors.edge,
+          lineWidth: function (d) { return 0.5 + d.data.w * 1.2; },
+          strokeOpacity: function (d) { return 0.1 + (d.data.w - 0.3) * 0.45; }
+        },
+        state: {
+          highlight: { stroke: colors.text, strokeOpacity: 0.85, lineWidth: 1.8 },
+          dim: { strokeOpacity: 0.04 }
+        }
+      },
+      layout: {
+        type: "d3-force",
+        link: {
+          distance: function (e) { return 26 + (1 - e.data.w) * 90; },
+          strength: function (e) { return e.data.w * 0.35; }
+        },
+        manyBody: { strength: -150, distanceMax: 340 },
+        collide: { radius: 22 },
+        x: { strength: 0.08 },
+        y: { strength: 0.09 }
+      },
+      behaviors: [
+        "zoom-canvas",
+        "drag-canvas",
+        "drag-element-force",
+        {
+          type: "hover-activate",
+          key: "hover",
+          degree: 1,
+          state: "highlight",
+          inactiveState: "dim",
+          enable: function (ev) { return ev.targetType === "node"; }
+        }
+      ],
+      plugins: [
+        {
+          type: "tooltip",
+          key: "tip",
+          trigger: "hover",
+          enterable: false,
+          getContent: function (ev, items) {
+            var html = "";
+            items.forEach(function (item) {
+              var d = (item && item.data) || {};
+              if (d.kind === "node") {
+                html += "<b>" + esc(d.name) + "</b><br><span class='tt-type'>" +
+                        esc(d.type) + "</span>" +
+                        (d.range ? "<br>" + esc(trim(d.range, 150)) : "");
+              } else if (d.kind === "edge") {
+                html += "<b>" + esc(d.a) + " &rarr; " + esc(d.b) + "</b><br>weight " +
+                        Number(d.w).toFixed(2);
+              }
+            });
+            return html;
+          }
+        }
+      ]
     });
-    svg.call(zoom).on("click", function () { select(null); });
 
-    applyFilters(0.25);
+    graph.on("node:click", function (ev) {
+      var id = ev && ev.target && ev.target.id;
+      var n = id ? nodes[+String(id).slice(1)] : null;
+      if (n) select(n);
+    });
+    graph.on("canvas:click", function () { select(null); });
 
-    // interactive graph is up — retire the static copy
-    var stat = document.getElementById("static-graph");
-    if (stat && stat.parentNode) stat.parentNode.removeChild(stat);
+    applyCounts();
+
+    Promise.resolve(graph.render()).then(onRendered, function (err) {
+      note("Static view — G6 render failed: " + (err && err.message ? err.message : err));
+      if (typeof console !== "undefined") console.error(err);
+    });
+  }
+
+  function onRendered() {
+    // G6 is on screen — retire the static copy
+    if (staticSvg && staticSvg.parentNode) staticSvg.parentNode.removeChild(staticSvg);
+    mount.classList.add("ready");
     loading.hidden = true;
   }
 
@@ -154,235 +215,91 @@
 
   function threshold() { return +thresholdEl.value; }
   function visible(n) { return active[n.type]; }
-  function radius(n) { return 4.5 + Math.sqrt(n.deg) * 1.05; }
 
-  function applyFilters(alpha) {
+  function buildData() {
     var t = threshold();
-    links.length = 0;
     nodes.forEach(function (n) { n.deg = 0; });
 
+    var edges = [];
     allEdges.forEach(function (e) {
       if (e.w < t) return;
       var a = nodes[e.s], b = nodes[e.t];
       if (!visible(a) || !visible(b)) return;
-      links.push({ source: a, target: b, w: e.w, k: e.k });
       a.deg++; b.deg++;
-    });
-
-    edgeCountEl.textContent = links.length.toLocaleString();
-    thresholdOut.textContent = t.toFixed(2);
-
-    linkSel = gLinks.selectAll("line")
-      .data(links, function (d) { return d.k; })
-      .join("line")
-      .style("stroke-opacity", function (d) { return 0.07 + (d.w - 0.3) * 0.4; });
-
-    if (nodeSel) {
-      nodeSel.attr("r", radius).style("display", function (d) {
-        return visible(d) ? null : "none";
+      edges.push({
+        id: "e" + e.k,
+        source: a.id,
+        target: b.id,
+        data: { kind: "edge", w: e.w, k: e.k, a: a.name, b: b.name }
       });
-    }
-
-    sim.force("link").links(links);
-    sim.force("collide").radius(function (d) { return radius(d) + 5; });
-    sim.alpha(alpha).restart();
-    paint();
-  }
-
-  /* ---------- layout ---------- */
-
-  function measure() {
-    var rect = svg.node().parentNode.getBoundingClientRect();
-    width = rect.width; height = rect.height;
-    svg.attr("viewBox", "0 0 " + width + " " + height);
-    scale = 1;
-  }
-
-  function onResize() {
-    measure();
-    if (!sim) return;
-    sim.force("center", d3.forceCenter(width / 2, height / 2));
-    sim.force("x", d3.forceX(width / 2).strength(0.08));
-    sim.force("y", d3.forceY(height / 2).strength(0.09));
-    refit();
-  }
-
-  // The simulation lays out in an unbounded space; the viewBox is what adapts to
-  // it. Clamping node positions to the container instead just pins everything to
-  // the walls. `scale` is graph units per CSS pixel, used to keep label text a
-  // constant on-screen size however far the view is zoomed out.
-  function refit() {
-    var shown = nodes.filter(visible);
-    if (!shown.length || !width || !height) return;
-
-    var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    shown.forEach(function (n) {
-      var r = radius(n);
-      if (n.x - r < minX) minX = n.x - r;
-      if (n.x + r > maxX) maxX = n.x + r;
-      if (n.y - r < minY) minY = n.y - r;
-      if (n.y + r > maxY) maxY = n.y + r;
     });
-    if (!isFinite(minX)) return;
 
-    var pad = 16 * scale;
-    var w = (maxX - minX) + 2 * pad;
-    var h = (maxY - minY) + 2 * pad;
-    var aspect = width / height;
-    if (w / h > aspect) h = w / aspect; else w = h * aspect;
+    var shown = nodes.filter(visible).map(function (n) {
+      return {
+        id: n.id,
+        data: {
+          kind: "node", i: n.i, name: n.name, type: n.type,
+          range: n.range, deg: n.deg
+        }
+      };
+    });
 
-    var cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
-    svg.attr("viewBox", (cx - w / 2) + " " + (cy - h / 2) + " " + w + " " + h);
-
-    scale = w / width;
-    applyTextScale();
-    updateLabels();
+    return { nodes: shown, edges: edges };
   }
 
-  function applyTextScale() {
-    if (!gLabels) return;
-    gLabels.style("font-size", (11 * scale / k) + "px");
-    gLabels.style("stroke-width", (3 * scale / k) + "px");
-  }
-  window.addEventListener("resize", onResize);
-  if (window.ResizeObserver) {
-    new ResizeObserver(onResize).observe(document.querySelector(".canvas-wrap"));
-  }
-
-  var tickCount = 0;
-
-  function tick() {
-    if (linkSel) {
-      linkSel
-        .attr("x1", function (d) { return d.source.x; })
-        .attr("y1", function (d) { return d.source.y; })
-        .attr("x2", function (d) { return d.target.x; })
-        .attr("y2", function (d) { return d.target.y; });
-    }
-    nodeSel.attr("cx", function (d) { return d.x; })
-           .attr("cy", function (d) { return d.y; });
-    labelSel.attr("x", function (d) { return d.x; })
-            .attr("y", function (d) { return d.y + radius(d) + 11 * scale / k; });
-
-    // the view frames whatever the layout produced, and label placement depends
-    // on where things ended up — both re-run as it moves, throttled
-    if (++tickCount % 6 === 0) refit();
-  }
-
-  /* ---------- focus + labels ---------- */
-
-  function focusNode() { return selected != null ? selected : hovered; }
-
-  function neighborSet(n) {
-    var set = new Set([n.i]);
+  function applyCounts() {
     var t = threshold();
-    adjacency[n.i].forEach(function (a) {
-      if (a.w >= t && visible(nodes[a.j])) set.add(a.j);
+    var count = 0;
+    allEdges.forEach(function (e) {
+      if (e.w >= t && visible(nodes[e.s]) && visible(nodes[e.t])) count++;
     });
-    return set;
+    edgeCountEl.textContent = count.toLocaleString();
+    thresholdOut.textContent = t.toFixed(2);
   }
 
-  function paint() {
-    var f = focusNode();
-    var near = f ? neighborSet(f) : null;
-
-    gLinks.attr("class", f ? "links " + cls(f.type) : "links");
-
-    if (linkSel) {
-      linkSel
-        .classed("lit", function (d) { return !!f && (d.source.i === f.i || d.target.i === f.i); })
-        .classed("dim", function (d) { return !!f && d.source.i !== f.i && d.target.i !== f.i; });
-    }
-    nodeSel
-      .classed("dim", function (d) { return !!f && !near.has(d.i); })
-      .classed("sel", function (d) { return !!f && d.i === f.i; });
-
-    updateLabels();
+  function applyFilters() {
+    if (!graph) return;
+    applyCounts();
+    if (selected && !visible(selected)) select(null);
+    graph.setData(buildData());
+    graph.render();
   }
 
-  // Greedy label placement: densest nodes win, anything that would overlap an
-  // already-placed label is dropped. Keeps the picture readable at every zoom.
-  function updateLabels() {
-    if (!labelSel) return;
-    if (!labelsEl.checked) { labelSel.style("display", "none"); return; }
-
-    var f = focusNode();
-    var near = f ? neighborSet(f) : null;
-
-    var cand = nodes.filter(function (n) {
-      return visible(n) && (f ? near.has(n.i) : true);
-    });
-    cand.sort(function (a, b) {
-      if (f) {
-        if (a.i === f.i) return -1;
-        if (b.i === f.i) return 1;
-      }
-      return b.deg - a.deg;
-    });
-
-    var fs = 11 * scale / k;               // label size in graph units
-    var placed = [], show = {};
-    cand.forEach(function (n) {
-      if (!f && n.deg < 2 && k < 1.4) return;
-      var w = n.name.length * fs * 0.52, h = fs * 1.2;
-      var x0 = n.x - w / 2, y0 = n.y + radius(n) + 2;
-      var x1 = x0 + w, y1 = y0 + h;
-      for (var i = 0; i < placed.length; i++) {
-        var p = placed[i];
-        if (x0 < p[2] && x1 > p[0] && y0 < p[3] && y1 > p[1]) return;
-      }
-      placed.push([x0, y0, x1, y1]);
-      show[n.i] = true;
-    });
-
-    labelSel.style("display", function (d) { return show[d.i] ? null : "none"; });
-  }
-
-  /* ---------- interaction ---------- */
-
-  function dragStart(ev, d) {
-    if (!ev.active) sim.alphaTarget(0.2).restart();
-    d.fx = d.x; d.fy = d.y;
-    svg.classed("dragging", true);
-  }
-  function dragMove(ev, d) { d.fx = ev.x; d.fy = ev.y; }
-  function dragEnd(ev, d) {
-    if (!ev.active) sim.alphaTarget(0);
-    d.fx = null; d.fy = null;
-    svg.classed("dragging", false);
-  }
-
-  function setHover(n, ev) {
-    if (n && ev) {
-      var rect = svg.node().getBoundingClientRect();
-      tip.textContent = n.name;
-      tip.style.left = (ev.clientX - rect.left) + "px";
-      tip.style.top = (ev.clientY - rect.top) + "px";
-      tip.hidden = false;
-    } else {
-      tip.hidden = true;
-    }
-    if (n !== hovered) { hovered = n; paint(); }
-  }
+  /* ---------- selection ---------- */
 
   function select(n) {
+    if (graph && selected && visible(selected)) {
+      try { graph.setElementState(selected.id, []); } catch (e) { /* gone after a refilter */ }
+    }
     selected = n;
     if (!n) {
       panelBody.hidden = true;
       panelEmpty.hidden = false;
-    } else {
-      renderPanel(n);
+      return;
     }
-    paint();
+    if (graph && visible(n)) {
+      try {
+        graph.setElementState(n.id, ["selected"]);
+        graph.focusElement(n.id);
+      } catch (e) { /* not rendered yet */ }
+    }
+    renderPanel(n);
   }
 
   /* ---------- details panel ---------- */
 
   function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
     });
   }
+
+  function trim(s, n) {
+    s = String(s || "");
+    return s.length > n ? s.slice(0, n - 1) + "…" : s;
+  }
+
+  function cls(type) { return "t-" + type.toLowerCase(); }
 
   function renderPanel(n) {
     var t = threshold();
@@ -412,7 +329,8 @@
         '<button class="nb" data-j="' + a.j + '" data-k="' + a.k + '">' +
           '<span class="nb-top"><span class="nb-name">' + esc(m.name) + "</span>" +
           '<span class="nb-w">' + a.w.toFixed(2) + (a.w >= t ? "" : " ·") + "</span></span>" +
-          '<span class="bar ' + cls(m.type) + '"><i style="width:' + Math.round(a.w * 100) + '%"></i></span>' +
+          '<span class="bar ' + cls(m.type) + '"><i style="width:' +
+            Math.round(a.w * 100) + '%"></i></span>' +
         "</button>" +
         '<div class="nb-desc" hidden></div>' +
       "</li>";
@@ -440,8 +358,8 @@
     });
   }
 
-  // Relation descriptions are 1.2 MB, so they load on first use — as a script tag
-  // rather than a fetch, so this also works when the page is opened off the filesystem.
+  // 1.2 MB of relation prose: loaded on first use, as a script tag rather than a
+  // fetch so it also works when the page is opened off the filesystem.
   function loadDescriptions() {
     if (edgeDesc) return Promise.resolve(edgeDesc);
     if (window.__WAG_KG_EDGES__) {
@@ -452,10 +370,7 @@
       loadDescriptions.pending = new Promise(function (resolve) {
         var s = document.createElement("script");
         s.src = "data/kg_edge_desc.js";
-        s.onload = function () {
-          edgeDesc = window.__WAG_KG_EDGES__ || [];
-          resolve(edgeDesc);
-        };
+        s.onload = function () { edgeDesc = window.__WAG_KG_EDGES__ || []; resolve(edgeDesc); };
         s.onerror = function () { resolve([]); };
         document.head.appendChild(s);
       });
@@ -478,24 +393,29 @@
         active[t] = !active[t];
         b.classList.toggle("on", active[t]);
         b.classList.toggle("off", !active[t]);
-        if (selected && !visible(selected)) select(null);
-        applyFilters(0.45);
+        applyFilters();
       });
       box.appendChild(b);
     });
   }
 
+  var pending = null;
   thresholdEl.addEventListener("input", function () {
-    applyFilters(0.45);
-    if (selected) renderPanel(selected);
+    applyCounts();
+    clearTimeout(pending);
+    pending = setTimeout(function () {
+      applyFilters();
+      if (selected) renderPanel(selected);
+    }, 200);
   });
 
-  labelsEl.addEventListener("change", updateLabels);
+  labelsEl.addEventListener("change", function () {
+    if (graph) graph.render();
+  });
 
   document.getElementById("reset").addEventListener("click", function () {
     select(null);
-    svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
-    refit();
+    if (graph) graph.fitView();
   });
 
   searchEl.addEventListener("input", function () {
