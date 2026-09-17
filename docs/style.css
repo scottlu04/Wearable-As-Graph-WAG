@@ -308,6 +308,50 @@ p { margin: 12px 0; }
 .bar i { display: block; height: 100%; background: currentColor; }
 .nb-desc { font-size: .79rem; color: var(--muted); line-height: 1.5; padding: 0 0 8px; margin: 0; }
 
+/* ---------- dataset coverage ---------- */
+
+.coverage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 28px;
+  align-items: start;
+  margin-top: 14px;
+}
+.coverage table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+  line-height: 1.3;
+}
+.coverage th, .coverage td { padding: 3px 6px; border-bottom: 1px solid var(--line); }
+.coverage thead th {
+  padding: 3px 4px;
+  font-size: .76rem;
+  font-weight: 600;
+  text-align: center;
+  border-top: 1.5px solid var(--text);
+  border-bottom: 1px solid var(--text);
+  white-space: nowrap;
+}
+.coverage thead th:first-child, .coverage td:first-child { text-align: left; padding-left: 0; }
+.coverage td { text-align: center; }
+.coverage thead th + th { width: 64px; }
+.coverage td.yes { color: var(--text); font-weight: 600; }
+.coverage tr.group th {
+  text-align: left;
+  font-size: .8rem;
+  font-weight: 600;
+  padding: 10px 0 3px;
+}
+.coverage tr.group th .dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.coverage tbody tr:last-child td { border-bottom: 1.5px solid var(--text); }
+
 /* ---------- resources ---------- */
 
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 12px 0; }
@@ -362,6 +406,8 @@ p { margin: 12px 0; }
 
 @media (max-width: 860px) {
   .explorer { grid-template-columns: 1fr; }
+  .coverage { grid-template-columns: 1fr; }
+  .coverage table + table thead { display: none; }
   .panel { height: auto; max-height: 420px; }
   .toggles { margin-left: 0; }
 }
@@ -372,6 +418,7 @@ p { margin: 12px 0; }
   .authors { font-size: 1.05rem; }
   .affil { font-size: .95rem; }
   #search, .range { width: 100%; }
+  .coverage thead th + th { width: 50px; font-size: .7rem; white-space: normal; }
   #threshold { flex: 1; width: auto; min-width: 0; }
   .canvas-wrap { height: 440px; }
 }
