@@ -5,6 +5,10 @@ longitudinal wearable-health data. It builds a personalized wearable knowledge
 graph, retrieves a query-conditioned subgraph, and uses that context to support
 LLM reasoning over personal time-series signals.
 
+📄 **Project page:** <https://scottlu04.github.io/Wearable-As-Graph-WAG/> — an interactive
+explorer for the 102-metric wearable knowledge graph, and the per-dataset coverage of the
+52 metrics that are grounded in wearable data.
+
 
 ## Repository Structure
 
