@@ -347,6 +347,20 @@ figcaption {
 #graph-mount.ready { opacity: 1; }
 #graph-mount canvas { display: block; }
 
+/* only meaningful once G6 is live, and only with a mouse or trackpad */
+.zoom-hint {
+  display: none;
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  font-size: .72rem;
+  color: var(--faint);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  #graph-mount.ready ~ .zoom-hint { display: block; }
+}
+
 /* G6's tooltip plugin renders its own element; give it the page's look */
 .g6-tooltip {
   max-width: 280px;

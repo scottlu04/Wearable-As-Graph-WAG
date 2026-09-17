@@ -44,6 +44,23 @@
     return;
   }
 
+  function nodeSize(deg) { return 9 + Math.sqrt(deg) * 2.4; }
+
+  // G6's Hull pads by each member's full render bounds, and those include the
+  // node's text label: with labels on, every hull swells by half a label width
+  // and the categories bury one another. Pad by the node itself instead.
+  class TightHull extends G6.Hull {
+    getPadding() {
+      var r = 0;
+      this.hullMemberIds.forEach(function (id) {
+        var n = nodes[+String(id).slice(1)];
+        if (n) r = Math.max(r, nodeSize(n.deg) / 2);
+      });
+      return r + this.options.padding;
+    }
+  }
+  G6.register("plugin", "tight-hull", TightHull);
+
   /* ---------- colours follow the page's light/dark tokens ---------- */
 
   function readColors() {
@@ -110,27 +127,43 @@
       if (!visible(n)) return;
       (byType[n.type] || (byType[n.type] = [])).push(n.id);
     });
-    return TYPES.filter(function (t) {
-      return byType[t] && byType[t].length >= 3;
-    }).map(function (t) {
+    var out = [];
+    TYPES.forEach(function (t) {
+      if (!byType[t] || byType[t].length < 3) return;
       var c = colors[t];
-      return {
-        key: "hull-" + t.toLowerCase(),
-        type: "hull",
+      var key = "hull-" + t.toLowerCase();
+      var base = {
+        type: "tight-hull",
         members: byType[t],
         corner: "rounded",
-        padding: 16,
+        padding: 14,
+        pointerEvents: "none"  // clicks inside a hull still reach the canvas
+      };
+      // The shaded area sits under edges and nodes. Its label rides on a second,
+      // otherwise invisible hull above them, or the nodes would cover it.
+      out.push(Object.assign({
+        key: key,
+        zIndex: -100,
         fill: c,
         fillOpacity: 0.13,
         stroke: c,
         strokeOpacity: 0.45,
+        label: false
+      }, base));
+      out.push(Object.assign({
+        key: key + "-label",
+        zIndex: 100,
+        fillOpacity: 0,
+        strokeOpacity: 0,
         labelText: t,
+        labelAutoRotate: false,
         labelFill: "#fff",
         labelPadding: 3,
         labelBackgroundFill: c,
         labelBackgroundRadius: 5
-      };
+      }, base));
     });
+    return out;
   }
 
   function buildPlugins() {
@@ -162,10 +195,14 @@
     graph = new G6.Graph({
       container: mount,
       autoFit: "view",
+      padding: 20,
+      // Positions are fixed, so animation only adds fades, and G6 throws for
+      // every element a filter removes while its update animation is running.
+      animation: false,
       data: buildData(),
       node: {
         style: {
-          size: function (d) { return 9 + Math.sqrt(d.data.deg) * 2.4; },
+          size: function (d) { return nodeSize(d.data.deg); },
           fill: function (d) { return colors[d.data.type]; },
           stroke: colors.surface,
           lineWidth: 1,
@@ -199,10 +236,13 @@
       // No runtime layout: coordinates are baked into data/layout.json by the
       // clustered force layout (see docs/build.py). Running it in the page costs
       // ~14s and gives a different picture every time.
+      // Zooming is the wheel listener below, not G6's zoom-canvas.
       behaviors: [
-        "zoom-canvas",
         "drag-canvas",
-        "drag-element-force",
+        "drag-element",        // drag-element-force needs a live d3-force layout
+        // hides colliding node labels, highest-degree first, and brings them
+        // back as you zoom in
+        { type: "auto-adapt-label", key: "labels", padding: 2 },
         {
           type: "hover-activate",
           key: "hover",
@@ -221,6 +261,18 @@
       if (n) select(n);
     });
     graph.on("canvas:click", function () { select(null); });
+
+    // A plain wheel scrolls the page; Ctrl/⌘ + wheel zooms, and so does a
+    // trackpad pinch, which arrives as a ctrl+wheel with no key pressed.
+    // G6's zoom-canvas matches held keys exactly, so it can't cover all three.
+    mount.addEventListener("wheel", function (ev) {
+      if (!(ev.ctrlKey || ev.metaKey)) return;
+      ev.preventDefault();
+      var r = mount.getBoundingClientRect();
+      var step = Math.max(-50, Math.min(50, -ev.deltaY));   // zoom-canvas's own curve
+      graph.zoomTo(graph.getZoom() * (1 + step / 100), false,
+                   [ev.clientX - r.left, ev.clientY - r.top]);
+    }, { passive: false });
 
     applyCounts();
 
