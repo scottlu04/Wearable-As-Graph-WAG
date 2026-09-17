@@ -939,76 +939,29 @@
 </section>
 
 <section>
-  <h2>Results</h2>
-  <p>
-    Main experiment on 10,341 queries: average rank over seven criteria (lower is better) and win rate
-    (higher is better), from an LLM judge ranking the Base, RAG and WAG responses to the same query.
-  </p>
-  <div class="table-scroll">
-  <table class="by-dataset">
-    <thead>
-      <tr><th>Dataset</th><th>Method</th><th>Insight&nbsp;&darr;</th><th>Relevance&nbsp;&darr;</th>
-      <th>Grounded&nbsp;&darr;</th><th>Personal&nbsp;&darr;</th><th>Clarity&nbsp;&darr;</th>
-      <th>Overall&nbsp;&darr;</th><th>Win rate&nbsp;&uarr;</th></tr>
-    </thead>
-    <tbody>
-      <tr><td rowspan="3">GLOBEM</td><td>Base</td><td>2.57</td><td>2.57</td><td>2.42</td><td>2.55</td><td>2.24</td><td>2.57</td><td>6%</td></tr>
-      <tr><td>RAG</td><td>2.00</td><td>1.99</td><td>2.03</td><td>2.00</td><td>1.86</td><td>1.99</td><td>24%</td></tr>
-      <tr class="win"><td>WAG</td><td>1.43</td><td>1.44</td><td>1.50</td><td>1.44</td><td>1.82</td><td>1.43</td><td>70%</td></tr>
-
-      <tr><td rowspan="3">IFH Affect</td><td>Base</td><td>2.59</td><td>2.58</td><td>2.45</td><td>2.57</td><td>2.24</td><td>2.59</td><td>6%</td></tr>
-      <tr><td>RAG</td><td>2.01</td><td>2.01</td><td>2.05</td><td>2.02</td><td>1.90</td><td>2.01</td><td>23%</td></tr>
-      <tr class="win"><td>WAG</td><td>1.40</td><td>1.40</td><td>1.46</td><td>1.41</td><td>1.79</td><td>1.40</td><td>71%</td></tr>
-
-      <tr><td rowspan="3">LifeSnaps</td><td>Base</td><td>2.66</td><td>2.65</td><td>2.50</td><td>2.63</td><td>2.31</td><td>2.66</td><td>5%</td></tr>
-      <tr><td>RAG</td><td>1.95</td><td>1.95</td><td>2.00</td><td>1.96</td><td>1.83</td><td>1.95</td><td>25%</td></tr>
-      <tr class="win"><td>WAG</td><td>1.39</td><td>1.40</td><td>1.45</td><td>1.40</td><td>1.75</td><td>1.39</td><td>70%</td></tr>
-
-      <tr><td rowspan="3">PMData</td><td>Base</td><td>2.63</td><td>2.61</td><td>2.45</td><td>2.60</td><td>2.28</td><td>2.62</td><td>6%</td></tr>
-      <tr><td>RAG</td><td>1.97</td><td>1.97</td><td>2.04</td><td>1.98</td><td>1.85</td><td>1.96</td><td>23%</td></tr>
-      <tr class="win"><td>WAG</td><td>1.41</td><td>1.41</td><td>1.47</td><td>1.41</td><td>1.78</td><td>1.41</td><td>70%</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <p>
-    Diagnostic study on 1,000 queries with stronger baselines, averaged over a 3&times;3
-    generator&ndash;judge matrix. WAG ranks first while using about 5.2&times; fewer input tokens than
-    feeding the whole query window, and its context preparation takes about 23&nbsp;ms.
-  </p>
-  <div class="table-scroll">
-  <table>
-    <thead>
-      <tr><th>Method</th><th>Rank&nbsp;&darr;</th><th>Win rate&nbsp;&uarr;</th><th>Input tok.</th>
-      <th>Output tok.</th><th>Context prep. (ms)</th><th>Gen. time (s)</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Base</td><td>4.12</td><td>3.9%</td><td>1,344</td><td>211</td><td>4.1</td><td>7.25</td></tr>
-      <tr><td>RAG</td><td>3.72</td><td>5.1%</td><td>1,598</td><td>219</td><td>4.2</td><td>7.37</td></tr>
-      <tr><td>StaticGraph</td><td>2.57</td><td>19.2%</td><td>4,395</td><td>306</td><td>17.3</td><td>10.30</td></tr>
-      <tr class="win"><td>WAG</td><td>2.17</td><td>38.2%</td><td>4,476</td><td>316</td><td>23.4</td><td>10.14</td></tr>
-      <tr><td>FullContext</td><td>2.43</td><td>33.8%</td><td>23,110</td><td>331</td><td>49.3</td><td>14.10</td></tr>
-    </tbody>
-  </table>
-  </div>
-</section>
-
-<section>
   <h2>Resources</h2>
-  <ul>
-    <li><a href="https://github.com/scottlu04/Wearable-As-Graph-WAG/tree/main/resources/kg">Wearable knowledge graph</a>:
-      102 metric nodes with UMLS grounding, definitions, normal ranges and recommendations, and 5,151
-      weighted relations.</li>
-    <li><a href="https://github.com/scottlu04/Wearable-As-Graph-WAG/tree/main/resources/query_set">Query benchmark</a>:
-      10,341 data-grounded queries over 40 subjects from four public datasets, annotated with query
-      type, time window and abnormality level.</li>
-    <li><a href="https://github.com/scottlu04/Wearable-As-Graph-WAG/tree/main/response_generation">Baselines and pipeline</a>:
-      Base, RAG, StaticGraph, FullContext and WAG, plus the LLM-as-a-judge evaluation.</li>
-  </ul>
-  <p class="muted">
-    The source datasets (GLOBEM, IFH Affect, LifeSnaps and PMData) are released by their original
-    authors and must be obtained from them under their own terms. This repository ships the derived
-    graph, the generated query set and the processing code.
+  <div class="cards">
+    <a class="card" href="https://github.com/scottlu04/Wearable-As-Graph-WAG/tree/main/resources/kg">
+      <h4>Wearable knowledge graph</h4>
+      <p>102 metric nodes with UMLS grounding, definitions, normal ranges and recommendations; 5,151
+      weighted, evidence-backed relations.</p>
+    </a>
+    <a class="card" href="https://github.com/scottlu04/Wearable-As-Graph-WAG/tree/main/resources/query_set">
+      <h4>Query benchmark</h4>
+      <p>10,341 data-grounded queries over 40 subjects from four public datasets, annotated with
+      query type, time window and abnormality level.</p>
+    </a>
+    <a class="card" href="https://github.com/scottlu04/Wearable-As-Graph-WAG/tree/main/response_generation">
+      <h4>Baselines &amp; pipeline</h4>
+      <p>Reference implementations of <span class="sc">Base</span>, <span class="sc">RAG</span>,
+      <span class="sc">StaticGraph</span>, <span class="sc">FullContext</span> and
+      <span class="sc">WAG</span>, plus the LLM-as-a-judge evaluation.</p>
+    </a>
+  </div>
+  <p class="note">
+    The four source datasets &mdash; GLOBEM, IFH Affect, LifeSnaps and PMData &mdash; are released by
+    their original authors and must be obtained from them under their own terms. This repository ships
+    the derived graph, the generated query set and the processing code.
   </p>
 </section>
 

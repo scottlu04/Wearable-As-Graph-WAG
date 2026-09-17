@@ -61,9 +61,6 @@ a:hover { text-decoration: underline; }
 section { margin-top: 36px; }
 h2 { font-size: 1.3rem; margin: 0 0 10px; }
 p { margin: 12px 0; }
-ul { padding-left: 1.3em; }
-li { margin: 6px 0; }
-.muted { color: var(--muted); font-size: .92rem; }
 
 /* ---------- header ---------- */
 
@@ -311,23 +308,23 @@ li { margin: 6px 0; }
 .bar i { display: block; height: 100%; background: currentColor; }
 .nb-desc { font-size: .79rem; color: var(--muted); line-height: 1.5; padding: 0 0 8px; margin: 0; }
 
-/* ---------- tables ---------- */
+/* ---------- resources ---------- */
 
-.table-scroll { overflow-x: auto; }
-table {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 620px;
-  font-size: .88rem;
-  font-variant-numeric: tabular-nums;
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin: 12px 0; }
+.card {
+  display: block;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color .15s, transform .15s;
 }
-th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid var(--line); }
-/* text columns: the first cell of each row, plus the method cell that follows
-   a rowspanned dataset cell */
-th:first-child, td:first-child, td[rowspan] + td, .by-dataset th:nth-child(2) { text-align: left; }
-thead th { font-weight: 600; border-top: 1.5px solid var(--text); border-bottom: 1px solid var(--text); white-space: nowrap; }
-tbody tr:last-child td { border-bottom: 1.5px solid var(--text); }
-tr.win td { font-weight: 700; }
+.card:hover { text-decoration: none; border-color: var(--link); transform: translateY(-2px); }
+.card h4 { margin: 0 0 6px; font-size: .95rem; }
+.card p { margin: 0; font-size: .83rem; color: var(--muted); line-height: 1.55; }
+.sc { font-variant: small-caps; font-weight: 600; letter-spacing: .02em; }
+.note { color: var(--muted); font-size: .9rem; }
 
 /* ---------- citation ---------- */
 
