@@ -323,7 +323,6 @@ p { margin: 12px 0; }
 .card:hover { text-decoration: none; border-color: var(--link); transform: translateY(-2px); }
 .card h4 { margin: 0 0 6px; font-size: .95rem; }
 .card p { margin: 0; font-size: .83rem; color: var(--muted); line-height: 1.55; }
-.sc { font-variant: small-caps; font-weight: 600; letter-spacing: .02em; }
 .note { color: var(--muted); font-size: .9rem; }
 
 /* ---------- citation ---------- */
