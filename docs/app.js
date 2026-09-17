@@ -200,60 +200,98 @@
       // every element a filter removes while its update animation is running.
       animation: false,
       data: buildData(),
+      // Colours are read through callbacks so a light/dark switch picks them up.
       node: {
         style: {
           size: function (d) { return nodeSize(d.data.deg); },
-          fill: function (d) { return colors[d.data.type]; },
-          stroke: colors.surface,
+          fill: typeColor,
+          stroke: function () { return colors.surface; },
           lineWidth: 1,
+          // G6 only resets what the base style names, so everything a state
+          // changes needs a base value here or it sticks after the state goes
+          opacity: 1,
+          halo: false,
+          labelOpacity: 1,
+          labelFontWeight: 400,
           labelText: function (d) { return labelsEl.checked ? d.data.name : ""; },
-          labelFill: colors.text,
+          labelFill: function () { return colors.text; },
           labelFontSize: 10,
           labelBackground: true,
-          labelBackgroundFill: colors.surface,
+          labelBackgroundFill: function () { return colors.surface; },
           labelBackgroundOpacity: 0.72,
           labelBackgroundRadius: 3,
           labelPlacement: "bottom",
           labelMaxWidth: 130
         },
         state: {
-          highlight: { lineWidth: 2.5, stroke: colors.text, halo: true },
-          dim: { opacity: 0.18, labelOpacity: 0 },
-          selected: { lineWidth: 3, stroke: colors.text, halo: true }
+          // hovered and selected nodes wear a halo in their own colour;
+          // neighbours of the hovered node simply keep theirs
+          hover: {
+            lineWidth: 2,
+            halo: true,
+            haloStroke: typeColor,
+            haloStrokeOpacity: 0.35,
+            haloLineWidth: 12,
+            labelFontWeight: 600
+          },
+          dim: { opacity: 0.2, labelOpacity: 0 },
+          selected: {
+            lineWidth: 2.5,
+            stroke: function () { return colors.text; },
+            halo: true,
+            haloStroke: typeColor,
+            haloStrokeOpacity: 0.35,
+            haloLineWidth: 12,
+            labelFontWeight: 600
+          }
         }
       },
       edge: {
         style: {
-          stroke: colors.edge,
+          stroke: function () { return colors.edge; },
           lineWidth: function (d) { return 0.5 + d.data.w * 1.2; },
           strokeOpacity: function (d) { return 0.1 + (d.data.w - 0.3) * 0.45; }
         },
         state: {
-          highlight: { stroke: colors.text, strokeOpacity: 0.85, lineWidth: 1.8 },
-          dim: { strokeOpacity: 0.04 }
+          highlight: {
+            stroke: function () { return hoverColor || colors.text; },
+            strokeOpacity: 0.7,
+            lineWidth: 1.6
+          },
+          dim: { strokeOpacity: 0.03 }
         }
       },
       // No runtime layout: coordinates are baked into data/layout.json by the
       // clustered force layout (see docs/build.py). Running it in the page costs
       // ~14s and gives a different picture every time.
-      // Zooming is the wheel listener below, not G6's zoom-canvas.
+      // Zooming is the wheel listener below, not G6's zoom-canvas; hovering is
+      // hover() below, not G6's hover-activate.
       behaviors: [
         "drag-canvas",
         "drag-element",        // drag-element-force needs a live d3-force layout
         // hides colliding node labels, highest-degree first, and brings them
         // back as you zoom in
-        { type: "auto-adapt-label", key: "labels", padding: 2 },
-        {
-          type: "hover-activate",
-          key: "hover",
-          degree: 1,
-          state: "highlight",
-          inactiveState: "dim",
-          enable: function (ev) { return ev.targetType === "node"; }
-        }
+        { type: "auto-adapt-label", key: "labels", padding: 2 }
       ],
       plugins: buildPlugins()
     });
+
+    graph.on("node:pointerenter", function (ev) {
+      if (!dragging) hover(ev.target.id);
+    });
+    graph.on("node:pointerleave", function () {
+      if (!dragging) hover(null);
+    });
+    // G6 sends no node:pointerleave when the pointer leaves the canvas straight
+    // from a node, so neither the highlight nor the tooltip would go away
+    mount.addEventListener("pointerleave", function () {
+      if (dragging) return;
+      hover(null);
+      var tip = graph.getPluginInstance("tip");
+      if (tip) tip.hide();
+    });
+    graph.on("node:dragstart", function () { dragging = true; hover(null); });
+    graph.on("node:dragend", function () { dragging = false; });
 
     graph.on("node:click", function (ev) {
       var id = ev && ev.target && ev.target.id;
@@ -344,6 +382,38 @@
     graph.setData(buildData());
     graph.setOptions({ plugins: buildPlugins() });
     graph.render();
+  }
+
+  /* ---------- hover ---------- */
+
+  var hoverColor = null;   // read by the edge highlight style
+  var dragging = false;
+
+  function typeColor(d) { return colors[d.data.type]; }
+
+  // G6's hover-activate gives the hovered node and its neighbours one shared
+  // state, and sets it before any callback runs, so the hovered node can't be
+  // told apart and the edges can't take its colour. This does both.
+  function hover(id) {
+    if (!graph) return;
+    var data = graph.getData();
+    var states = {};
+    var near = {}, lit = {};
+    if (id) {
+      hoverColor = typeColor(graph.getNodeData(id));
+      near[id] = true;
+      graph.getNeighborNodesData(id).forEach(function (n) { near[n.id] = true; });
+      graph.getRelatedEdgesData(id).forEach(function (e) { lit[e.id] = true; });
+    }
+    data.nodes.forEach(function (n) {
+      if (selected && n.id === selected.id) states[n.id] = ["selected"];
+      else if (!id) states[n.id] = [];
+      else states[n.id] = n.id === id ? ["hover"] : near[n.id] ? [] : ["dim"];
+    });
+    data.edges.forEach(function (e) {
+      states[e.id] = !id ? [] : lit[e.id] ? ["highlight"] : ["dim"];
+    });
+    graph.setElementState(states, false);
   }
 
   /* ---------- selection ---------- */
