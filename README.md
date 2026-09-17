@@ -1,13 +1,15 @@
-# WAG: Wearable As Graph
+## WAG: Query-Conditioned Graph Retrieval for Contextualized LLM Reasoning in Personalized Wearable Data
+### AACL-IJCNLP 2026 | [Project Page](https://scottlu04.github.io/Wearable-As-Graph-WAG/) | Paper (coming soon)
 
-WAG is a research framework for query-conditioned graph retrieval over
-longitudinal wearable-health data. It builds a personalized wearable knowledge
-graph, retrieves a query-conditioned subgraph, and uses that context to support
-LLM reasoning over personal time-series signals.
+![WAG framework](docs/assets/framework.png)
 
-📄 **Project page:** <https://scottlu04.github.io/Wearable-As-Graph-WAG/> — an interactive
-explorer for the 102-metric wearable knowledge graph, and the per-dataset coverage of the
-52 metrics that are grounded in wearable data.
+Official implementation of **Wearable As Graph (WAG)**, a query-conditioned graph retrieval
+framework for LLM reasoning over longitudinal wearable-health data. WAG builds a personalized
+wearable knowledge graph, retrieves a query-conditioned subgraph, and uses that context to
+support LLM reasoning over personal time-series signals.
+
+The project page carries an interactive explorer for the 102-metric wearable knowledge graph,
+and the per-dataset coverage of the 52 metrics that are grounded in wearable data.
 
 
 ## Repository Structure
@@ -105,3 +107,18 @@ python -m unittest discover
 ## License
 
 MIT License. See `LICENSE`.
+
+## Citation
+
+```bibtex
+@inproceedings{lu2026wag,
+  title     = {{WAG}: Query-Conditioned Graph Retrieval for Contextualized
+               {LLM} Reasoning in Personalized Wearable Data},
+  author    = {Lu, Zhenyu and Abbasian, Mahyar and Rahmani, Amir M.},
+  booktitle = {Proceedings of the 5th Conference of the Asia-Pacific Chapter of
+               the Association for Computational Linguistics and the 15th
+               International Joint Conference on Natural Language Processing
+               (AACL-IJCNLP 2026)},
+  year      = {2026}
+}
+```
