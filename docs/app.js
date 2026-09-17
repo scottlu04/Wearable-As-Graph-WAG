@@ -261,9 +261,8 @@
           dim: { strokeOpacity: 0.03 }
         }
       },
-      // No runtime layout: coordinates are baked into data/layout.json by the
-      // clustered force layout (see docs/build.py). Running it in the page costs
-      // ~14s and gives a different picture every time.
+      // No runtime layout: coordinates are baked into data/layout.json by
+      // tools/bake-layout.html, so the page and its static SVG always agree.
       // Zooming is the wheel listener below, not G6's zoom-canvas; hovering is
       // hover() below, not G6's hover-activate.
       behaviors: [

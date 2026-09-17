@@ -262,13 +262,11 @@ def main():
             degrees[b] += 1
     radii = [radius(d) for d in degrees]
 
-    # Prefer coordinates exported from a settled run of the real layout in the
-    # browser (docs/data/layout.json) — d3-force produces a far better picture
-    # than the crude fallback below, which only runs if that file is missing.
-    # To refresh it: open the page, let the graph settle, and in the console run
-    #   JSON.stringify({box:[590,620], pos: [...document.querySelectorAll('.nodes circle')]
-    #     .map(c => [+c.getAttribute('cx'), +c.getAttribute('cy')])})
-    # then rescale into the 590x620 box and save it over layout.json.
+    # Prefer the baked coordinates in docs/data/layout.json: G6's d3-force with a
+    # per-category anchor keeps the categories apart, which the crude fallback
+    # below (only used if that file is missing) does not.
+    # To refresh it: serve docs/, open tools/bake-layout.html, download the
+    # result over data/layout.json, then rerun this script.
     layout_file = os.path.join(OUT, "layout.json")
     pos = None
     if os.path.exists(layout_file):
