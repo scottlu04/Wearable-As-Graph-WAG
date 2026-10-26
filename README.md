@@ -1,5 +1,5 @@
 ## WAG: Query-Conditioned Graph Retrieval for Contextualized LLM Reasoning in Personalized Wearable Data
-### AACL-IJCNLP 2026 · Oral Presentation | [Project Page](https://scottlu04.github.io/Wearable-As-Graph-WAG/) | [Paper](https://arxiv.org/abs/2605.18763)
+### AACL 2026 · Oral Presentation | [Project Page](https://scottlu04.github.io/Wearable-As-Graph-WAG/) | [Paper](https://arxiv.org/abs/2605.18763)
 
 ![WAG framework](docs/assets/framework.png)
 
